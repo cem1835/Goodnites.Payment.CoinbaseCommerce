@@ -1,4 +1,5 @@
-﻿using Volo.Abp.Domain;
+﻿using Volo.Abp;
+using Volo.Abp.Domain;
 using Volo.Abp.Modularity;
 
 namespace Goodnites.Payment.CoinbaseCommerce
@@ -9,6 +10,9 @@ namespace Goodnites.Payment.CoinbaseCommerce
     )]
     public class CoinbaseCommerceDomainModule : AbpModule
     {
-
+        public override void OnApplicationInitialization(ApplicationInitializationContext context)
+        {
+            
+        }
     }
 }
