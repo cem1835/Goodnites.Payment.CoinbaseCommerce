@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Goodnites.Payment.CoinbaseCommerce</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EasyAbp.PaymentService.Domain" Version="1.10.4" />
+    <PackageReference Include="Volo.Abp.Ddd.Domain" Version="4.4.4" />
+    <ProjectReference Include="..\Goodnites.Payment.CoinbaseCommerce.Domain.Shared\Goodnites.Payment.CoinbaseCommerce.Domain.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

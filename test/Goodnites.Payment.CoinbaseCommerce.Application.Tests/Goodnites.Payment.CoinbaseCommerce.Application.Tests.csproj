@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Goodnites.Payment.CoinbaseCommerce</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Goodnites.Payment.CoinbaseCommerce.Application\Goodnites.Payment.CoinbaseCommerce.Application.csproj" />
+    <ProjectReference Include="..\Goodnites.Payment.CoinbaseCommerce.Domain.Tests\Goodnites.Payment.CoinbaseCommerce.Domain.Tests.csproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
+  </ItemGroup>
+
+</Project>
