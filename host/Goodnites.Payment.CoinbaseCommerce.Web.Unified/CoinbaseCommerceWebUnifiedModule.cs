@@ -30,7 +30,9 @@ using Volo.Abp.MultiTenancy;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.Identity;
+using Volo.Abp.SettingManagement;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
+using Volo.Abp.SettingManagement.Web;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
@@ -50,6 +52,8 @@ namespace Goodnites.Payment.CoinbaseCommerce
         typeof(AbpAccountApplicationModule),
         typeof(AbpEntityFrameworkCorePostgreSqlModule),
         typeof(AbpSettingManagementEntityFrameworkCoreModule),
+        typeof(AbpSettingManagementWebModule),
+        typeof(AbpSettingManagementApplicationModule),
         typeof(AbpPermissionManagementEntityFrameworkCoreModule),
         typeof(AbpPermissionManagementApplicationModule),
         typeof(AbpIdentityWebModule),
