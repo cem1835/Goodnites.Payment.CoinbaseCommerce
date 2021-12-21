@@ -6,9 +6,8 @@ namespace Goodnites.Payment.CoinbaseCommerce.Settings
     {
         public override void Define(ISettingDefinitionContext context)
         {
-            /* Define module settings here.
-             * Use names from CoinbaseCommerceSettings class.
-             */
+            context.Add(new SettingDefinition(CoinbaseCommerceSettings.CoinBaseApiKey,isEncrypted:true));
+            context.Add(new SettingDefinition(CoinbaseCommerceSettings.CoinBaseWebHookKey,isEncrypted:true));
         }
     }
 }

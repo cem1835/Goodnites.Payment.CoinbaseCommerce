@@ -9,6 +9,9 @@ using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
 using Goodnites.Payment.CoinbaseCommerce.Permissions;
+using Goodnites.Payment.CoinbaseCommerce.Web.Settings;
+using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
+using Volo.Abp.SettingManagement.Web.Pages.SettingManagement;
 
 namespace Goodnites.Payment.CoinbaseCommerce.Web
 {
@@ -54,6 +57,21 @@ namespace Goodnites.Payment.CoinbaseCommerce.Web
             {
                 //Configure authorization.
             });
+            
+             Configure<SettingManagementPageOptions>(opt =>
+             {
+                 opt.Contributors.Add(new CoinBaseSettingPageContributor());
+                 
+             });
+             
+             Configure<AbpBundlingOptions>(opt =>
+             {
+                 opt.ScriptBundles.Configure(typeof(IndexModel).FullName,
+                     configure =>
+                     {
+                         configure.AddFiles("/Pages/Components/CoinBaseSettings/Default.js");
+                     });
+             });
         }
     }
 }

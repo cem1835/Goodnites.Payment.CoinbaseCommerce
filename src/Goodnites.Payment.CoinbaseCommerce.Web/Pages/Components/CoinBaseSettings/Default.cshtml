@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Volo.Abp.SettingManagement.Localization
+@inject IHtmlLocalizer<AbpSettingManagementResource> L
+@model Goodnites.Payment.CoinbaseCommerce.Dto.CoinBaseSettingsDto
+
+
+<form id="CoinBaseSettings">
+    <abp-row>
+        <abp-column size-md="_12">
+            <div>
+                <abp-input asp-for="ApiKey" label="@L["CoinBase ApiKey"].Value"></abp-input>
+                <abp-input asp-for="WebHook" label="@L["CoinBase WebHook"].Value"></abp-input>
+            </div>
+            <hr class="my-4"/>
+            <div>
+                <abp-button button-type="Primary" type="submit">
+                    <i class="fa fa-save"></i> @L["Save"]
+                </abp-button>
+            </div>
+        </abp-column>
+    </abp-row>
+</form>
