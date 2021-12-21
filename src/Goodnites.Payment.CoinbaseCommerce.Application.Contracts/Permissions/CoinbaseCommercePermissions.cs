@@ -10,5 +10,7 @@ namespace Goodnites.Payment.CoinbaseCommerce.Permissions
         {
             return ReflectionHelper.GetPublicConstantsRecursively(typeof(CoinbaseCommercePermissions));
         }
+
+        public const string ApiSetting = "CoinBaseCommerceSettingsAuth";
     }
 }

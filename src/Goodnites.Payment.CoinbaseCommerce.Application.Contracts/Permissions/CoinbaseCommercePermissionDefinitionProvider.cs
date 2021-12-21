@@ -8,7 +8,9 @@ namespace Goodnites.Payment.CoinbaseCommerce.Permissions
     {
         public override void Define(IPermissionDefinitionContext context)
         {
-            var myGroup = context.AddGroup(CoinbaseCommercePermissions.GroupName, L("Permission:CoinbaseCommerce"));
+            var coinBaseGroup = context.AddGroup(CoinbaseCommercePermissions.GroupName, L("Permission:CoinbaseCommerce"));
+
+            coinBaseGroup.AddPermission(CoinbaseCommercePermissions.ApiSetting, L("CoinbaseSettings"));
         }
 
         private static LocalizableString L(string name)
