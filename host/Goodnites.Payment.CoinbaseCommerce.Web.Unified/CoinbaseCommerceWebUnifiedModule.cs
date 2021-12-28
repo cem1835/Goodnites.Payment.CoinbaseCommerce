@@ -24,6 +24,7 @@ using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
 using Volo.Abp.Identity.Web;
+using Volo.Abp.Json;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.MultiTenancy;
@@ -72,6 +73,14 @@ namespace Goodnites.Payment.CoinbaseCommerce
         )]
     public class CoinbaseCommerceWebUnifiedModule : AbpModule
     {
+        public override void PreConfigureServices(ServiceConfigurationContext context)
+        {
+            Configure<AbpJsonOptions>(opt =>
+            {
+                opt.UseHybridSerializer = false;
+            });
+        }
+
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             var hostingEnvironment = context.Services.GetHostingEnvironment();
