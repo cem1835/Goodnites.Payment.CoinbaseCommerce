@@ -2,6 +2,7 @@
   "culture": "en",
   "texts": {
     "MyAccount":  "My account",
-    "SamplePageMessage": "A sample page for the CoinbaseCommerce module"
+    "SamplePageMessage": "A sample page for the CoinbaseCommerce module",
+    "Permission:CoinbaseCommerce": "Coinbase"
   }
 }
