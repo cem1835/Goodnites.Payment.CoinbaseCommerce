@@ -37,12 +37,13 @@ namespace Goodnites.Payment.CoinbaseCommerce
                 throw new PaymentAmountInvalidException(payment.ActualPaymentAmount, PaymentMethod);
             }
             
-            if (!Guid.TryParse(configurations.GetOrDefault("customerId") as string, out var accountId))
+            if (!Guid.TryParse(configurations.GetOrDefault(CoinBaseConsts.CustomerId) as string, out var accountId))
             {
-                throw new ArgumentNullException("customerId");
+                throw new ArgumentNullException(CoinBaseConsts.CustomerId);
             }
             
             payment.SetProperty("AccountId", accountId);
+            payment.SetProperty(CoinBaseConsts.WebHookId, configurations.GetOrDefault(CoinBaseConsts.WebHookId));
             
             await _paymentManager.CompletePaymentAsync(payment); // this func publish PaymentCompletedEto 
 
@@ -52,6 +53,11 @@ namespace Goodnites.Payment.CoinbaseCommerce
 
         public override async Task OnCancelStartedAsync(EasyAbp.PaymentService.Payments.Payment payment)
         {
+            if (payment.CanceledTime.HasValue)
+            {
+                return;
+            }
+            
             await _paymentManager.CompleteCancelAsync(payment);
         }
 

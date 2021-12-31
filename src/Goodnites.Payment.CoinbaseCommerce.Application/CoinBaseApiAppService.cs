@@ -54,8 +54,12 @@ namespace Goodnites.Payment.CoinbaseCommerce
 
         public async Task<Response<Charge>> CreateChargeAsync(CreateCharge createCharge)
         {
-            var result = await _commerceApi.CreateChargeAsync(createCharge);
+            var matchKey = _guidGenerator.Create();
 
+            createCharge.Metadata[CoinBaseConsts.MatchKey] = matchKey;
+            
+            var result = await _commerceApi.CreateChargeAsync(createCharge);
+            
             if (result.HasError())
             {
                 _logger.LogError($"Coinbase Payment Error : {result.Error.Message}");
@@ -64,15 +68,11 @@ namespace Goodnites.Payment.CoinbaseCommerce
 
             try
             {
-                var matchKey = _guidGenerator.Create();
-
-                createCharge.Metadata[CoinBaseConsts.MatchKey] = matchKey;
-
                 var createPaymentEto = new CreatePaymentEto(
                     _currentTenant.Id,
                     _currentUser.GetId(),
                     CoinBaseConsts.CoinBase,
-                    "USD",
+                    createCharge.LocalPrice.Currency,
                     new List<CreatePaymentItemEto>()
                     {
                         new CreatePaymentItemEto
@@ -80,11 +80,13 @@ namespace Goodnites.Payment.CoinbaseCommerce
                             ItemType = "FUND",
                             ItemKey = matchKey.ToString(),
                             OriginalPaymentAmount = createCharge.LocalPrice.Amount,
-                            ExtraProperties = new ExtraPropertyDictionary
-                                {{"FUND", true}, {CoinBaseConsts.MatchKey, matchKey}}
                         }
                     }
                 );
+
+                createPaymentEto.SetProperty("FUND", true);
+                createPaymentEto.SetProperty(CoinBaseConsts.MatchKey, matchKey);
+                
                 await _distributedEventBus.PublishAsync(createPaymentEto);
             }
             catch (Exception ex)
@@ -95,36 +97,57 @@ namespace Goodnites.Payment.CoinbaseCommerce
             return result;
         }
 
-        public async Task WebHookAsync(Webhook webhook, string headerValue)
+        public async Task WebHookAsync(string webhook, string headerValue)
         {
             var webHook =
                 await _settingManager.GetOrNullAsync(CoinbaseCommerceSettings.CoinBaseWebHookKey, "G", null, true);
 
-            if (WebhookHelper.IsValid(webHook, headerValue, JsonConvert.SerializeObject(webhook)))
+            if (WebhookHelper.IsValid(webHook, headerValue, webhook))
             {
-                var chargeInfo = webhook.Event.DataAs<Charge>();
+                var parsedWebHook = JsonConvert.DeserializeObject<Webhook>(webhook);
+                
+                var chargeInfo = parsedWebHook.Event.DataAs<Charge>();
 
-                var matchKey = chargeInfo.Metadata[CoinBaseConsts.MatchKey]?.ToObject<Guid>();
+                var matchKey = chargeInfo.Metadata[CoinBaseConsts.MatchKey].ToObject<Guid>();
+
+                var userId = chargeInfo.Metadata[CoinBaseConsts.CustomerId].ToObject<Guid>();
 
                 var coinBasePayments =
-                    await _coinbasePaymentRepository.GetCoinBasePaymentsByUserIdAsync(_currentUser.GetId());
+                    await _coinbasePaymentRepository.GetCoinBasePaymentsByUserIdAsync(userId);
 
                 var payment =
-                    coinBasePayments.FirstOrDefault(x => (Guid) x.GetProperty(CoinBaseConsts.MatchKey) == matchKey);
+                    coinBasePayments.FirstOrDefault(x =>x.GetProperty(CoinBaseConsts.MatchKey,Guid.Empty) == matchKey);
 
-                if (webhook.Event.IsChargeFailed)
+                if (payment.GetProperty(CoinBaseConsts.WebHookId,"")==parsedWebHook.Id) // already processessed
+                {
+                    return;
+                }
+                
+                if (parsedWebHook.Event.IsChargeFailed)
                 {
                     await _paymentManager.StartCancelAsync(payment);
                 }
-                else if (webhook.Event.IsChargeCreated)
+                else if (parsedWebHook.Event.IsChargeConfirmed)
                 {
-                    // TODO : 
-                }
-                else if (webhook.Event.IsChargeConfirmed)
-                {
-                    await _paymentManager.StartPaymentAsync(payment);
+                    var extraPropertyDictionary = new ExtraPropertyDictionary()
+                    {
+                        {CoinBaseConsts.CustomerId, userId},
+                        {CoinBaseConsts.WebHookId,parsedWebHook.Id}
+                    };
+                    
+                    await _paymentManager.StartPaymentAsync(payment,extraPropertyDictionary);
                 }
             }
+        }
+
+        public async Task<(int Min, int Max)> GetCoinBaseMinMaxValuesAsync()
+        {
+            var min =
+                await _settingManager.GetOrNullAsync(CoinbaseCommerceSettings.CoinBaseMin, "G", null, true);
+            
+            var max=await _settingManager.GetOrNullAsync(CoinbaseCommerceSettings.CoinBaseMax, "G", null, true);
+
+            return (int.Parse(min), int.Parse(max));
         }
     }
 }

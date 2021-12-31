@@ -8,6 +8,8 @@ namespace Goodnites.Payment.CoinbaseCommerce
     {
         Task<Response<Charge>> CreateChargeAsync(CreateCharge createCharge);
 
-        Task WebHookAsync(Webhook webhook, string headerValue);
+        Task WebHookAsync(string webhook, string headerValue);
+
+        Task<(int Min, int Max)> GetCoinBaseMinMaxValuesAsync();
     }
 }
