@@ -15,9 +15,6 @@ namespace Goodnites.Payment.CoinbaseCommerce.Web.Menus
 
         private Task ConfigureMainMenuAsync(MenuConfigurationContext context)
         {
-            //Add main menu items.
-            context.Menu.AddItem(new ApplicationMenuItem(CoinbaseCommerceMenus.Prefix, displayName: "CoinbaseCommerce", "~/CoinbaseCommerce", icon: "fa fa-globe"));
-
             return Task.CompletedTask;
         }
     }
