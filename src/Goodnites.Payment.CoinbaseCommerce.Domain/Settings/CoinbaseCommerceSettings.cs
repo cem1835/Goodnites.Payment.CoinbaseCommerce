@@ -9,5 +9,7 @@
          */
         public const string CoinBaseApiKey = "CoinBaseApiKey";
         public const string CoinBaseWebHookKey = "CoinBaseWebHookKey";
+        public const string CoinBaseMin = "CoinBaseMin";
+        public const string CoinBaseMax = "CoinBaseMax";
     }
 }
