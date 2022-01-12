@@ -86,6 +86,8 @@ namespace Goodnites.Payment.CoinbaseCommerce
 
                 createPaymentEto.SetProperty("FUND", true);
                 createPaymentEto.SetProperty(CoinBaseConsts.MatchKey, matchKey);
+                createPaymentEto.SetProperty("PaymentMethod", "CoinBase");
+                createPaymentEto.SetProperty("CoinBaseCreateCharge", createCharge);
                 
                 await _distributedEventBus.PublishAsync(createPaymentEto);
             }
