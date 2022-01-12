@@ -8,7 +8,7 @@ using Volo.Abp;
 namespace Goodnites.Payment.CoinbaseCommerce
 {
     [RemoteService(Name = "GoodnitesCoinBaseSetting")]
-    [Microsoft.AspNetCore.Components.Route("/api/coinBaseSetting")]
+    [Route("/api/coinBaseSetting")]
     [Authorize(CoinbaseCommercePermissions.ApiSetting)]
     public class CoinBaseSettingsController : CoinbaseCommerceController, ICoinBaseSettingsAppService
     {
