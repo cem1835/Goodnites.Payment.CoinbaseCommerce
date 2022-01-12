@@ -25,6 +25,8 @@ namespace Goodnites.Payment.CoinbaseCommerce
             {
                 ApiKey = await SettingProvider.GetOrNullAsync(CoinbaseCommerceSettings.CoinBaseApiKey),
                 WebHook = await SettingProvider.GetOrNullAsync(CoinbaseCommerceSettings.CoinBaseWebHookKey),
+                Min = await SettingProvider.GetOrNullAsync(CoinbaseCommerceSettings.CoinBaseMin),
+                Max = await SettingProvider.GetOrNullAsync(CoinbaseCommerceSettings.CoinBaseMax)
             };
 
             if (CurrentTenant.IsAvailable)
@@ -37,6 +39,14 @@ namespace Goodnites.Payment.CoinbaseCommerce
                 settingsDto.WebHook = await SettingManager.GetOrNullForTenantAsync(
                     CoinbaseCommerceSettings.CoinBaseWebHookKey,
                     CurrentTenant.GetId(), false);
+                
+                settingsDto.Min = await SettingManager.GetOrNullForTenantAsync(
+                    CoinbaseCommerceSettings.CoinBaseMin,
+                    CurrentTenant.GetId(), false);
+                
+                settingsDto.Max = await SettingManager.GetOrNullForTenantAsync(
+                    CoinbaseCommerceSettings.CoinBaseMax,
+                    CurrentTenant.GetId(), false);
             }
             return settingsDto;
         }
@@ -48,6 +58,12 @@ namespace Goodnites.Payment.CoinbaseCommerce
                 await SettingManager.SetForTenantAsync(CurrentTenant.Id.Value, CoinbaseCommerceSettings.CoinBaseApiKey,
                     input.ApiKey);
                 
+                await SettingManager.SetForTenantAsync(CurrentTenant.Id.Value, CoinbaseCommerceSettings.CoinBaseMin,
+                    input.Min);
+                
+                await SettingManager.SetForTenantAsync(CurrentTenant.Id.Value, CoinbaseCommerceSettings.CoinBaseMax,
+                    input.Max);
+                
                 await SettingManager.SetForTenantAsync(CurrentTenant.Id.Value, CoinbaseCommerceSettings.CoinBaseWebHookKey,
                     input.WebHook);
             }
@@ -55,6 +71,8 @@ namespace Goodnites.Payment.CoinbaseCommerce
             {
                 await SettingManager.SetGlobalAsync(CoinbaseCommerceSettings.CoinBaseApiKey, input.ApiKey);
                 await SettingManager.SetGlobalAsync(CoinbaseCommerceSettings.CoinBaseWebHookKey, input.WebHook);
+                await SettingManager.SetGlobalAsync(CoinbaseCommerceSettings.CoinBaseMin, input.Min);
+                await SettingManager.SetGlobalAsync(CoinbaseCommerceSettings.CoinBaseMax, input.Max);
             }
         }
     }
