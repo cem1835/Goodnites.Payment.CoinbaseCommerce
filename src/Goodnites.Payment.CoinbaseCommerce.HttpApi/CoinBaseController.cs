@@ -33,22 +33,18 @@ namespace Goodnites.Payment.CoinbaseCommerce
         [Route("webhook")]
         public async Task<IActionResult> CoinBaseWebHookAsync()
         {
-
+        
 #if !DEBUG
-                   See : https://commerce.coinbase.com/docs/api/#webhooks
+                   
             if (Request.HttpContext.Connection.RemoteIpAddress == null)
             {
                 return BadRequest();
             }
-            
-            var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            if (ip.Contains("54.175.255.")==false)
-            {
-                return BadRequest();
-            }
 
-            var lastBlock = int.Parse(ip.Substring(ip.LastIndexOf("."), ip.Length));
-            if (!(lastBlock is >= 192 and <= 223))
+            var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            See : https://commerce.coinbase.com/docs/api/#webhooks
+            if (Enumerable.Range(192, 31).Select(number => $"54.175.255.{number}").Any(cIp => cIp == ip)==false)
             {
                 return BadRequest();
             }
